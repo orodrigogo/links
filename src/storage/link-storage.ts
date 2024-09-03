@@ -45,4 +45,4 @@ async function remove(id: string) {
   }
 }
 
-export const linkStorage = { save, remove, get }
+export const linkStorage = { get, save, remove }

@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import {
   Alert,
   View,
   Text,
   Modal,
   Image,
+  Linking,
   FlatList,
   TouchableOpacity,
-  Linking,
 } from "react-native"
 import { MaterialIcons } from "@expo/vector-icons"
-import { router } from "expo-router"
+import { router, useFocusEffect } from "expo-router"
 
 import { Link } from "@/components/link"
 import { Option } from "@/components/option"
@@ -66,6 +66,12 @@ export default function Home() {
   useEffect(() => {
     getLinks()
   }, [category])
+
+  useFocusEffect(
+    useCallback(() => {
+      getLinks()
+    }, [])
+  )
 
   return (
     <View style={styles.container}>
