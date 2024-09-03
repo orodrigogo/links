@@ -22,7 +22,7 @@ import { categories } from "@/utils/categories"
 
 import { linkStorage, LinkStorage } from "@/storage/link-storage"
 
-export default function Home() {
+export default function Index() {
   const [showModal, setShowModal] = useState(false)
   const [links, setLinks] = useState<LinkStorage[]>([])
   const [category, setCategory] = useState(categories[0].name)
@@ -99,12 +99,17 @@ export default function Home() {
       <Modal transparent animationType="slide" visible={showModal}>
         <View style={styles.modal}>
           <View style={styles.modalContent}>
-            <TouchableOpacity
-              style={styles.modalClose}
-              onPress={() => setShowModal(false)}
-            >
-              <MaterialIcons name="close" size={20} color={colors.gray[400]} />
-            </TouchableOpacity>
+            <View style={styles.modalHeader}>
+              <Text style={styles.category}>{link.category}</Text>
+
+              <TouchableOpacity onPress={() => setShowModal(false)}>
+                <MaterialIcons
+                  name="close"
+                  size={20}
+                  color={colors.gray[400]}
+                />
+              </TouchableOpacity>
+            </View>
 
             <Text style={styles.name}>{link.name}</Text>
 

@@ -32,6 +32,12 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
   },
+  modalHeader: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 32,
+  },
   modalContent: {
     backgroundColor: colors.gray[900],
     borderTopWidth: 1,
@@ -39,11 +45,14 @@ export const styles = StyleSheet.create({
     paddingBottom: 32,
     padding: 24,
   },
-  modalClose: {
-    alignItems: "flex-end",
+  category: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: "500",
+    color: colors.gray[400],
   },
   name: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "600",
     color: colors.gray[200],
   },
