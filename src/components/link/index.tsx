@@ -24,7 +24,7 @@ export function Link({ name, url, onDetails }: Props) {
       </View>
 
       <TouchableOpacity onPress={onDetails}>
-        <MaterialIcons name="more-horiz" size={18} color={colors.gray[400]} />
+        <MaterialIcons name="more-horiz" size={20} color={colors.gray[400]} />
       </TouchableOpacity>
     </View>
   )

@@ -25,6 +25,7 @@ export function Categories({ selected, onChange }: Props) {
       horizontal
       style={styles.list}
       contentContainerStyle={styles.content}
+      showsHorizontalScrollIndicator={false}
     />
   )
 }

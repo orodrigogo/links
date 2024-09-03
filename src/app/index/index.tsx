@@ -63,14 +63,10 @@ export default function Home() {
     await Linking.openURL(link.url)
   }
 
-  useEffect(() => {
-    getLinks()
-  }, [category])
-
   useFocusEffect(
     useCallback(() => {
       getLinks()
-    }, [])
+    }, [category])
   )
 
   return (
