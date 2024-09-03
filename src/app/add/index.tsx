@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Alert, Text, TouchableOpacity, View } from "react-native"
+import { Alert, Linking, Text, TouchableOpacity, View } from "react-native"
 import { MaterialIcons } from "@expo/vector-icons"
 import { router } from "expo-router"
 
@@ -23,6 +23,12 @@ export default function Add() {
           "Atenção",
           "Escolha a categoria e preencha todos os campos."
         )
+      }
+
+      const isValid = await Linking.canOpenURL(url)
+
+      if (!isValid) {
+        return Alert.alert("Link", "Link inválido.")
       }
 
       await linkStorage.save({
