@@ -5,7 +5,6 @@ import { colors } from "@/styles/colors"
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.gray[950],
     paddingTop: 62,
   },
   header: {
@@ -19,6 +18,10 @@ export const styles = StyleSheet.create({
   logo: {
     height: 32,
     width: 38,
+  },
+  links: {
+    borderTopWidth: 1,
+    borderTopColor: colors.gray[600],
   },
   linksContent: {
     gap: 20,

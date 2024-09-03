@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import {
   Alert,
   View,
@@ -91,6 +91,7 @@ export default function Home() {
             onDetails={() => handleDetails(item)}
           />
         )}
+        style={styles.links}
         contentContainerStyle={styles.linksContent}
         showsVerticalScrollIndicator={false}
       />
@@ -106,7 +107,10 @@ export default function Home() {
             </TouchableOpacity>
 
             <Text style={styles.name}>{link.name}</Text>
-            <Text style={styles.url}>{link.url}</Text>
+
+            <Text style={styles.url} numberOfLines={2}>
+              {link.url}
+            </Text>
 
             <View style={styles.footer}>
               <Option
