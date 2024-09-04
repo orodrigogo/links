@@ -60,6 +60,7 @@ export default function Add() {
         <Text style={styles.title}>Novo</Text>
       </View>
 
+      <Text style={styles.label}>Selecione uma categoria</Text>
       <Categories selected={category} onChange={setCategory} />
 
       <View style={styles.form}>
