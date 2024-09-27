@@ -7,7 +7,7 @@ export type LinkDatabase = {
   category_id: number
 }
 
-export function useCategoriesDatabase() {
+export function useLinksDatabase() {
   const database = useSQLiteContext()
 
   async function create(data: Omit<LinkDatabase, "id">) {

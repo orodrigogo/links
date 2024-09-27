@@ -10,7 +10,8 @@ export function useCategoriesDatabase() {
 
   async function searchByName(name: string) {
     try {
-      const query = "SELECT id, name FROM categories WHERE name LIKE ?"
+      const query =
+        "SELECT id, name FROM categories WHERE name LIKE ? ORDER BY name"
 
       const response = await database.getAllAsync<CategoryDatabase>(
         query,

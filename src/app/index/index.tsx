@@ -21,7 +21,6 @@ import { colors } from "@/styles/colors"
 import { categories } from "@/utils/categories"
 
 import { linkStorage, LinkStorage } from "@/storage/link-storage"
-import { useCategoriesDatabase } from "@/database/tables/useCategoriesDatabase"
 
 export default function Index() {
   const [showModal, setShowModal] = useState(false)

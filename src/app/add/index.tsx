@@ -1,5 +1,12 @@
 import { useState } from "react"
-import { Alert, Linking, Text, TouchableOpacity, View } from "react-native"
+import {
+  Alert,
+  Linking,
+  Pressable,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native"
 import { MaterialIcons } from "@expo/vector-icons"
 import { router } from "expo-router"
 
@@ -9,12 +16,18 @@ import { linkStorage } from "@/storage/link-storage"
 
 import { Input } from "@/components/input"
 import { Button } from "@/components/button"
+import { Header } from "@/components/header"
 import { Categories } from "@/components/categories"
 
+import { useLinksDatabase } from "@/database/useLinksDatabase"
+
 export default function Add() {
+  const [isCreating, setIsCreating] = useState(false)
   const [category, setCategory] = useState("")
   const [name, setName] = useState("")
   const [url, setUrl] = useState("")
+
+  const productDatabase = useLinksDatabase()
 
   async function handleAdd() {
     try {
@@ -31,12 +44,15 @@ export default function Add() {
         return Alert.alert("Link", "Link inválido.")
       }
 
-      await linkStorage.save({
-        id: new Date().getTime().toString(),
+      setIsCreating(true)
+
+      await productDatabase.create({
         name,
         url,
-        category,
+        category_id: 1,
       })
+
+      setIsCreating(false)
 
       Alert.alert("Sucesso", "Novo link adicionado!", [
         {
@@ -45,6 +61,7 @@ export default function Add() {
         },
       ])
     } catch (error) {
+      setIsCreating(false)
       Alert.alert("Erro", "Não foi possível criar novo link.")
       console.log(error)
     }
@@ -52,21 +69,19 @@ export default function Add() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity activeOpacity={0.7} onPress={() => router.back()}>
-          <MaterialIcons name="arrow-back" size={32} color={colors.gray[200]} />
-        </TouchableOpacity>
-
-        <Text style={styles.title}>Novo</Text>
-      </View>
+      <Header title="Novo" />
 
       <Text style={styles.label}>Selecione uma categoria</Text>
       <Categories selected={category} onChange={setCategory} />
 
       <View style={styles.form}>
+        <Pressable onPress={() => router.navigate("/categories")}>
+          <Input placeholder="Selecionar categoria" readOnly />
+        </Pressable>
+
         <Input placeholder="Nome" onChangeText={setName} />
         <Input placeholder="Link" onChangeText={setUrl} />
-        <Button title="Adicionar" onPress={handleAdd} />
+        <Button title="Adicionar" onPress={handleAdd} isLoading={isCreating} />
       </View>
     </View>
   )
