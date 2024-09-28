@@ -23,17 +23,7 @@ export default function Layout() {
               headerShown: false,
               contentStyle: { backgroundColor },
             }}
-          >
-            <Stack.Screen name="index/index" />
-            <Stack.Screen name="add/index" />
-            <Stack.Screen
-              name="categories/index"
-              options={{
-                presentation: "modal",
-                animation: "slide_from_bottom",
-              }}
-            />
-          </Stack>
+          />
         </SQLiteProvider>
       </Suspense>
     </View>

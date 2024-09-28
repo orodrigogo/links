@@ -19,9 +19,13 @@ export const styles = StyleSheet.create({
     height: 32,
     width: 38,
   },
+  search: {
+    padding: 24,
+  },
   links: {
     borderTopWidth: 1,
     borderTopColor: colors.gray[600],
+    marginTop: 24,
   },
   linksContent: {
     gap: 20,
@@ -68,5 +72,13 @@ export const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: colors.gray[600],
     paddingVertical: 14,
+  },
+  categoryList: {
+    height: 42,
+    maxHeight: 42,
+  },
+  categoryContent: {
+    gap: 16,
+    paddingHorizontal: 24,
   },
 })

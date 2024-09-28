@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import {
   Alert,
   View,
@@ -8,32 +8,49 @@ import {
   Linking,
   FlatList,
   TouchableOpacity,
+  Pressable,
 } from "react-native"
 import { MaterialIcons } from "@expo/vector-icons"
 import { router, useFocusEffect } from "expo-router"
 
 import { Link } from "@/components/link"
 import { Option } from "@/components/option"
-import { Categories } from "@/components/categories"
 
 import { styles } from "./styles"
 import { colors } from "@/styles/colors"
-import { categories } from "@/utils/categories"
 
 import { linkStorage, LinkStorage } from "@/storage/link-storage"
+import { Category } from "@/components/category"
+
+import {
+  CategoryDatabase,
+  useCategoriesDatabase,
+} from "@/database/useCategoriesDatabase"
+import {
+  LinkDatabase,
+  LinkShowDatabase,
+  useLinksDatabase,
+} from "@/database/useLinksDatabase"
+import { Input } from "@/components/input"
 
 export default function Index() {
   const [showModal, setShowModal] = useState(false)
-  const [links, setLinks] = useState<LinkStorage[]>([])
-  const [category, setCategory] = useState(categories[0].name)
-  const [link, setLink] = useState<LinkStorage>({} as LinkStorage)
+  const [links, setLinks] = useState<LinkDatabase[]>([])
+  const [category, setCategory] = useState<CategoryDatabase | null>(null)
+  const [categories, setCategories] = useState<CategoryDatabase[]>([])
+  const [link, setLink] = useState<LinkShowDatabase | null>(null)
+  const [searchLinkByName, setSearchByName] = useState("")
+
+  const categoriesDatabase = useCategoriesDatabase()
+  const linksDatabase = useLinksDatabase()
 
   async function getLinks() {
     try {
-      const response = await linkStorage.get()
-
-      const filtered = response.filter((link) => link.category === category)
-      setLinks(filtered)
+      const response = await linksDatabase.searchByName(
+        searchLinkByName,
+        category?.id
+      )
+      setLinks(response)
     } catch (error) {
       console.log(error)
       Alert.alert("Links", "Não foi possível listar os links.")
@@ -41,12 +58,16 @@ export default function Index() {
   }
 
   async function handleRemove() {
+    if (!link) {
+      return
+    }
+
     Alert.alert("Remover", "Deseja realmente remover?", [
       { style: "cancel", text: "Não" },
       {
         text: "Sim",
         onPress: async () => {
-          await linkStorage.remove(link.id)
+          await linksDatabase.remove(link.id)
           getLinks()
           setShowModal(false)
         },
@@ -54,19 +75,44 @@ export default function Index() {
     ])
   }
 
-  function handleDetails(selected: LinkStorage) {
-    setLink(selected)
+  async function handleDetails(selected: LinkDatabase) {
+    const response = await linksDatabase.show(selected.id)
+
+    setLink(response)
     setShowModal(true)
   }
 
   async function handleOpen() {
-    await Linking.openURL(link.url)
+    if (link) {
+      await Linking.openURL(link.url)
+    }
   }
+
+  async function getCategories() {
+    try {
+      const response = await categoriesDatabase.searchByName("")
+      setCategories(response)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  function handleCategorySelect(selected: CategoryDatabase) {
+    if (category?.id === selected.id) {
+      return setCategory(null)
+    }
+
+    setCategory(selected)
+  }
+
+  useEffect(() => {
+    getCategories()
+  }, [])
 
   useFocusEffect(
     useCallback(() => {
       getLinks()
-    }, [category])
+    }, [category, searchLinkByName])
   )
 
   return (
@@ -79,11 +125,29 @@ export default function Index() {
         </TouchableOpacity>
       </View>
 
-      <Categories selected={category} onChange={setCategory} />
+      <View style={styles.search}>
+        <Input placeholder="Pesquisar" onChangeText={setSearchByName} />
+      </View>
+
+      <FlatList
+        data={categories}
+        keyExtractor={(item) => String(item.id)}
+        renderItem={({ item }) => (
+          <Category
+            name={item.name}
+            isSelected={item.id === category?.id}
+            onPress={() => handleCategorySelect(item)}
+          />
+        )}
+        horizontal
+        style={styles.categoryList}
+        contentContainerStyle={styles.categoryContent}
+        showsHorizontalScrollIndicator={false}
+      />
 
       <FlatList
         data={links}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => (
           <Link
             name={item.name}
@@ -97,10 +161,10 @@ export default function Index() {
       />
 
       <Modal transparent animationType="slide" visible={showModal}>
-        <View style={styles.modal}>
+        <Pressable style={styles.modal} onPress={() => setShowModal(false)}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.category}>{link.category}</Text>
+              <Text style={styles.category}>{link?.category_name}</Text>
 
               <TouchableOpacity onPress={() => setShowModal(false)}>
                 <MaterialIcons
@@ -111,10 +175,10 @@ export default function Index() {
               </TouchableOpacity>
             </View>
 
-            <Text style={styles.name}>{link.name}</Text>
+            <Text style={styles.name}>{link?.name}</Text>
 
             <Text style={styles.url} numberOfLines={2}>
-              {link.url}
+              {link?.url}
             </Text>
 
             <View style={styles.footer}>
@@ -127,7 +191,7 @@ export default function Index() {
               <Option name="Abrir" icon="language" onPress={handleOpen} />
             </View>
           </View>
-        </View>
+        </Pressable>
       </Modal>
     </View>
   )

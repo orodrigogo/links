@@ -7,6 +7,10 @@ export type LinkDatabase = {
   category_id: number
 }
 
+export type LinkShowDatabase = LinkDatabase & {
+  category_name: string
+}
+
 export function useLinksDatabase() {
   const database = useSQLiteContext()
 
@@ -32,11 +36,18 @@ export function useLinksDatabase() {
     }
   }
 
-  async function searchByName(name: string) {
+  async function searchByName(name: string, categoryId?: number) {
     try {
-      const query = "SELECT * FROM links WHERE name LIKE ?"
+      let query
 
-      // parâmetros não nomeado.
+      query = "SELECT * FROM links WHERE name LIKE ?"
+
+      if (categoryId) {
+        query =
+          "SELECT * FROM links WHERE name LIKE ? AND category_id = " +
+          categoryId
+      }
+
       const response = await database.getAllAsync<LinkDatabase>(
         query,
         `%${name}%`
@@ -50,10 +61,13 @@ export function useLinksDatabase() {
 
   async function show(id: number) {
     try {
-      const query = "SELECT * FROM links WHERE id = ?"
+      const query = `
+      SELECT l.id, l.name, l.url, l.category_id, c.name AS category_name FROM links AS l
+      INNER JOIN categories AS c ON l.category_id = c.id
+      WHERE l.id = ${id}
+      `
 
-      const response = await database.getFirstAsync<LinkDatabase>(query, [id])
-
+      const response = await database.getFirstAsync<LinkShowDatabase>(query)
       return response
     } catch (error) {
       throw error
