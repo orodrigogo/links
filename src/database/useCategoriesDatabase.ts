@@ -46,7 +46,7 @@ export function useCategoriesDatabase() {
 
   async function remove(id: number) {
     const statement = await database.prepareAsync(
-      "DELETE FROM shopping WHERE id = $id"
+      "DELETE FROM categories WHERE id = $id"
     )
 
     try {
@@ -58,5 +58,35 @@ export function useCategoriesDatabase() {
     }
   }
 
-  return { searchByName, create, remove }
+  async function show(id: number) {
+    try {
+      const query = "SELECT * FROM categories WHERE id =" + id
+
+      const response = await database.getFirstAsync<CategoryDatabase>(query)
+      return response
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async function update({ id, name }: { id: number; name: string }) {
+    const statement = await database.prepareAsync(
+      "UPDATE categories SET name = $name WHERE id = $id"
+    )
+
+    try {
+      const result = await statement.executeAsync({
+        $id: id,
+        $name: name,
+      })
+
+      return
+    } catch (error) {
+      throw error
+    } finally {
+      await statement.finalizeAsync()
+    }
+  }
+
+  return { searchByName, create, remove, show, update }
 }

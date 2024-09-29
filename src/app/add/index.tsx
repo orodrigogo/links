@@ -1,17 +1,15 @@
-import { useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import {
   Alert,
   FlatList,
   Keyboard,
-  Linking,
   Modal,
   Text,
   TouchableOpacity,
   View,
 } from "react-native"
+import { router, useFocusEffect } from "expo-router"
 import { MaterialIcons } from "@expo/vector-icons"
-import { router } from "expo-router"
-import BouncyCheckbox from "react-native-bouncy-checkbox"
 import { z, ZodError } from "zod"
 
 import { styles } from "./styles"
@@ -26,13 +24,14 @@ import {
   CategoryDatabase,
   useCategoriesDatabase,
 } from "@/database/useCategoriesDatabase"
+import { Checkbox } from "@/components/checkbox"
 
 export default function Add() {
   const [searchCategoryByName, setSearchCategoryByName] = useState("")
   const [categories, setCategories] = useState<CategoryDatabase[]>([])
-  const [modaIsOpen, setModalIsOpen] = useState(false)
+  const [modalIsOpen, setModalIsOpen] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
-  const [category, setCategory] = useState<CategoryDatabase>()
+  const [category, setCategory] = useState<CategoryDatabase | null>(null)
   const [name, setName] = useState("")
   const [url, setUrl] = useState("")
 
@@ -43,10 +42,10 @@ export default function Add() {
     category: z.number({ message: "Selecione uma categoria para o link" }),
     name: z
       .string({ message: "Informe o nome do link" })
-      .length(1, { message: "Informe o nome do link" }),
+      .min(1, { message: "Informe o nome do link" }),
     url: z
       .string({ message: "Informe a URL" })
-      .url({ message: "URL inválida" }),
+      .url({ message: "Link inválido" }),
   })
 
   async function handleAdd() {
@@ -92,14 +91,28 @@ export default function Add() {
     }
   }
 
-  function onCategorySelect(categorySelected: CategoryDatabase) {
+  function handleCategorySelect(categorySelected: CategoryDatabase) {
     setModalIsOpen(false)
     setCategory(categorySelected)
+    setSearchCategoryByName("")
   }
 
-  useEffect(() => {
-    getCategories()
-  }, [searchCategoryByName])
+  function handleNewCategory() {
+    router.navigate("/new-category")
+    setModalIsOpen(false)
+  }
+
+  function handleCategoryEdit(id: number) {
+    router.navigate({ pathname: "/new-category", params: { id } })
+    setModalIsOpen(false)
+    setCategory(null)
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      getCategories()
+    }, [searchCategoryByName])
+  )
 
   return (
     <View style={styles.container}>
@@ -121,10 +134,10 @@ export default function Add() {
         />
         <Input placeholder="Nome" onChangeText={setName} />
         <Input placeholder="Link" onChangeText={setUrl} />
-        <Button title="Adicionar" onPress={handleAdd} isLoading={isCreating} />
+        <Button title="Salvar" onPress={handleAdd} isLoading={isCreating} />
       </View>
 
-      <Modal visible={modaIsOpen}>
+      <Modal visible={modalIsOpen}>
         <View style={styles.modalContent}>
           <View style={styles.modalHeader}>
             <Text style={styles.title}>Categoria</Text>
@@ -144,28 +157,18 @@ export default function Add() {
             data={categories}
             keyExtractor={(item) => String(item.id)}
             renderItem={({ item }) => (
-              <View style={styles.category}>
-                <BouncyCheckbox
-                  size={24}
-                  innerIconStyle={{
-                    borderRadius: 5,
-                    backgroundColor: colors.gray[800],
-                  }}
-                  fillColor={colors.gray[600]}
-                  iconImageStyle={{
-                    tintColor: colors.green[300],
-                    width: 12,
-                    height: 12,
-                  }}
-                  isChecked={item.id === category?.id}
-                  onPress={() => onCategorySelect(item)}
-                />
-                <Text style={styles.categoryName}>{item.name}</Text>
-              </View>
+              <Checkbox
+                title={item.name}
+                isChecked={item.id === category?.id}
+                onPress={() => handleCategorySelect(item)}
+                onEdit={() => handleCategoryEdit(item.id)}
+              />
             )}
             contentContainerStyle={styles.categoriesContent}
             showsVerticalScrollIndicator={false}
           />
+
+          <Button title="Adicionar categoria" onPress={handleNewCategory} />
         </View>
       </Modal>
     </View>

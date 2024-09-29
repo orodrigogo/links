@@ -22,6 +22,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     padding: 24,
     backgroundColor: colors.gray[950],
+    paddingBottom: 32,
   },
   label: {
     color: colors.gray[400],
@@ -31,14 +32,6 @@ export const styles = StyleSheet.create({
   form: {
     padding: 24,
     gap: 16,
-  },
-  category: {
-    flexDirection: "row",
-  },
-  categoryName: {
-    color: colors.gray[100],
-    fontWeight: "500",
-    fontSize: 16,
   },
   categoriesContent: {
     gap: 20,
@@ -56,5 +49,15 @@ export const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.gray[600],
     paddingVertical: 24,
+  },
+  modalNewCategory: {
+    flex: 1,
+    justifyContent: "flex-end",
+  },
+  modalNewCategoryTitle: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: "500",
+    color: colors.gray[400],
   },
 })

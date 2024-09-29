@@ -105,9 +105,11 @@ export default function Index() {
     setCategory(selected)
   }
 
-  useEffect(() => {
-    getCategories()
-  }, [])
+  useFocusEffect(
+    useCallback(() => {
+      getCategories()
+    }, [])
+  )
 
   useFocusEffect(
     useCallback(() => {
@@ -158,6 +160,9 @@ export default function Index() {
         style={styles.links}
         contentContainerStyle={styles.linksContent}
         showsVerticalScrollIndicator={false}
+        ListEmptyComponent={() => (
+          <Text style={styles.emptyList}>Nenhum link adicionado aqui.</Text>
+        )}
       />
 
       <Modal transparent animationType="slide" visible={showModal}>

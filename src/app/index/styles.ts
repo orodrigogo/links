@@ -81,4 +81,8 @@ export const styles = StyleSheet.create({
     gap: 16,
     paddingHorizontal: 24,
   },
+  emptyList: {
+    fontSize: 16,
+    color: colors.gray[400],
+  },
 })
