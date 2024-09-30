@@ -1,0 +1,53 @@
+{
+  "index": {
+    "input_search_placeholder": "Pesquisar",
+    "flatlist_links_empty": "Nenhum link adicionado aqui.",
+    "option_edit_name": "Editar",
+    "option_open_name": "Abrir",
+    "alert_error_get_links": "Não foi possível listar os links."
+  },
+  "navigation": {
+    "route_index": "Início",
+    "route_categories": "Categorias",
+    "label_dark": "Tema Escuro",
+    "label_light": "Tema Claro"
+  },
+  "save": {
+    "text_title": "Novo",
+    "text_categories_title": "Categorias",
+    "validation_required_category": "Selecione uma categoria para o link",
+    "validation_required_name": "Informe o nome do link",
+    "validation_required_url": "Informe a URL",
+    "validation_invalid_url": "Link inválido",
+    "alert_save_success_title": "Sucesso",
+    "alert_save_success_message": "Link salvo com sucesso!",
+    "alert_save_error_title": "Erro",
+    "alert_save_error_message": "Não foi possível criar novo link.",
+    "alert_remove_title": "Remover",
+    "alert_remove_message": "Deseja realmente remover?",
+    "alert_remove_cancel": "Não",
+    "alert_remove_confirm": "Sim",
+    "select_category_placeholder": "Selecionar categoria",
+    "input_name_placeholder": "Nome",
+    "input_link_placeholder": "Link",
+    "button_salve_title": "Salvar",
+    "input_search_placeholder": "Pesquisar",
+    "button_category_add_title": "Adicionar categoria"
+  },
+  "new_category": {
+    "validation_category_name_required": "Informe o nome da categoria",
+    "alert_remove_title": "Remover",
+    "alert_remove_message": "Deseja realmente remover?",
+    "alert_remove_cancel": "Não",
+    "alert_remove_confirm": "Sim",
+    "alert_save_success_title": "Sucesso",
+    "alert_save_success_message": "Salvo com sucesso!",
+    "alert_save_error_validation_title": "Atenção",
+    "alert_save_error_title": "Erro",
+    "alert_save_error_message": "Não foi possível criar novo link",
+    "text_category": "Categoria",
+    "input_name_placeholder": "Nome",
+    "button_salve_title": "Salvar",
+    "button_remove_title": "Remover"
+  }
+}

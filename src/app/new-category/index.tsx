@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { Alert, Text, TouchableOpacity, View } from "react-native"
 import { router, useLocalSearchParams } from "expo-router"
 import { MaterialIcons } from "@expo/vector-icons"
+import { useTranslation } from "react-i18next"
 import { z, ZodError } from "zod"
 
 import { styles } from "./styles"
@@ -24,10 +25,12 @@ export default function NewCategory() {
   const categoriesDatabase = useCategoriesDatabase()
   const params = useLocalSearchParams<{ id: string }>()
 
+  const { t } = useTranslation("translation", { keyPrefix: "new_category" })
+
   const formScheme = z.object({
     name: z
-      .string({ message: "Informe o nome da categoria" })
-      .min(1, { message: "Informe o nome da categoria" }),
+      .string({ message: t("validation_category_name_required") })
+      .min(1, { message: t("validation_category_name_required") }),
   })
 
   async function getCategoryById() {
@@ -46,10 +49,10 @@ export default function NewCategory() {
       return
     }
 
-    Alert.alert("Remover", "Deseja realmente remover?", [
-      { style: "cancel", text: "Não" },
+    Alert.alert(t("alert_remove_title"), t("alert_remove_message"), [
+      { style: "cancel", text: t("alert_remove_cancel") },
       {
-        text: "Sim",
+        text: t("alert_remove_confirm"),
         onPress: async () => {
           await categoriesDatabase.remove(Number(params.id))
           router.back()
@@ -77,20 +80,27 @@ export default function NewCategory() {
 
       setIsLoading(false)
 
-      Alert.alert("Sucesso", "Salvo com sucesso!", [
-        {
-          text: "Ok",
-          onPress: () => router.back(),
-        },
-      ])
+      Alert.alert(
+        t("alert_save_success_title"),
+        t("alert_save_success_message"),
+        [
+          {
+            text: "Ok",
+            onPress: () => router.back(),
+          },
+        ]
+      )
     } catch (error) {
       setIsLoading(false)
 
       if (error instanceof ZodError) {
-        return Alert.alert("Atenção", error.errors[0].message)
+        return Alert.alert(
+          t("alert_save_error_validation_title"),
+          error.errors[0].message
+        )
       }
 
-      Alert.alert("Erro", "Não foi possível criar novo link.")
+      Alert.alert(t("alert_save_error_title"), t("alert_save_error_message"))
       console.log(error)
     }
   }
@@ -106,20 +116,24 @@ export default function NewCategory() {
           <MaterialIcons name="arrow-back" size={32} color={colors.gray[200]} />
         </TouchableOpacity>
 
-        <Text style={styles.title}>Categoria</Text>
+        <Text style={styles.title}>{t("text_category")}</Text>
       </View>
 
       <View style={styles.form}>
         <Input
-          placeholder="Nome"
+          placeholder={t("input_name_placeholder")}
           onChangeText={setName}
           defaultValue={categorySelected?.name}
         />
-        <Button title="Salvar" onPress={handleSave} isLoading={isLoading} />
+        <Button
+          title={t("button_salve_title")}
+          onPress={handleSave}
+          isLoading={isLoading}
+        />
       </View>
 
       <TouchableOpacity style={styles.removeButton} onPress={handleRemove}>
-        <Text style={styles.remove}>Remover</Text>
+        <Text style={styles.remove}>{t("button_remove_title")}</Text>
       </TouchableOpacity>
     </View>
   )

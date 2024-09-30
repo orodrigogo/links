@@ -1,6 +1,8 @@
 import { useCallback, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { MaterialIcons } from "@expo/vector-icons"
 import { router, useFocusEffect } from "expo-router"
+import { DrawerToggleButton } from "@react-navigation/drawer"
 import {
   Alert,
   View,
@@ -36,14 +38,16 @@ export default function Index() {
   const [showModal, setShowModal] = useState(false)
 
   const [links, setLinks] = useState<LinkDatabase[]>([])
+  const [searchLinkByName, setSearchByName] = useState("")
   const [categories, setCategories] = useState<CategoryDatabase[]>([])
 
   const [category, setCategory] = useState<CategoryDatabase | null>(null)
   const [link, setLink] = useState<LinkShowDatabase | null>(null)
-  const [searchLinkByName, setSearchByName] = useState("")
 
   const categoriesDatabase = useCategoriesDatabase()
   const linksDatabase = useLinksDatabase()
+
+  const { t } = useTranslation("translation", { keyPrefix: "index" })
 
   async function getLinks() {
     try {
@@ -54,7 +58,7 @@ export default function Index() {
       setLinks(response)
     } catch (error) {
       console.log(error)
-      Alert.alert("Links", "Não foi possível listar os links.")
+      Alert.alert("Links", t("alert_error_get_links"))
     }
   }
 
@@ -108,7 +112,7 @@ export default function Index() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Image source={require("@/assets/logo.png")} style={styles.logo} />
+        <DrawerToggleButton tintColor={colors.green[300]} />
 
         <TouchableOpacity onPress={() => router.navigate("/save")}>
           <MaterialIcons name="add" size={32} color={colors.green[300]} />
@@ -116,7 +120,10 @@ export default function Index() {
       </View>
 
       <View style={styles.search}>
-        <Input placeholder="Pesquisar" onChangeText={setSearchByName} />
+        <Input
+          placeholder={t("input_search_placeholder")}
+          onChangeText={setSearchByName}
+        />
       </View>
 
       <FlatList
@@ -149,7 +156,7 @@ export default function Index() {
         contentContainerStyle={styles.linksContent}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={() => (
-          <Text style={styles.emptyList}>Nenhum link adicionado aqui.</Text>
+          <Text style={styles.emptyList}>{t("flatlist_links_empty")}</Text>
         )}
       />
 
@@ -176,13 +183,17 @@ export default function Index() {
 
             <View style={styles.footer}>
               <Option
-                name="Editar"
+                name={t("option_edit_name")}
                 icon="edit"
                 variant="secondary"
                 onPress={handleEdit}
               />
 
-              <Option name="Abrir" icon="language" onPress={handleOpen} />
+              <Option
+                name={t("option_open_name")}
+                icon="language"
+                onPress={handleOpen}
+              />
             </View>
           </View>
         </Pressable>

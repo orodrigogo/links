@@ -1,4 +1,7 @@
 import { type SQLiteDatabase } from "expo-sqlite"
+import { getLocales } from "expo-localization"
+
+const language = getLocales()[0].languageCode ?? "pt"
 
 export async function migrateDbIfNeeded(database: SQLiteDatabase) {
   try {
@@ -22,8 +25,8 @@ export async function migrateDbIfNeeded(database: SQLiteDatabase) {
       PRAGMA foreign_keys = ON;  
     `)
 
-      await database.execAsync(`
-      CREATE TABLE categories (
+      await database.execAsync(`        
+      CREATE TABLE IF NOT EXISTS categories (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL
       );
@@ -41,16 +44,9 @@ export async function migrateDbIfNeeded(database: SQLiteDatabase) {
 
       await database.execAsync(`
     INSERT OR IGNORE INTO categories (id, name) VALUES 
-      (1, 'Notícias'),
-      (2, 'Compras'),
-      (3, 'Filmes'),
-      (4, 'Livros'),
-      (5, 'Cursos'),
-      (6, 'Vídeos'),
-      (7, 'Séries'),
-      (8, 'Artigos'),
-      (9, 'Receitas'),
-      (10, 'Sites');
+      (1, '${language === "pt" ? "Vídeos" : "Videos"}'),
+      (2, '${language === "pt" ? "Artigos" : "Articles"}'),
+      (3, '${language === "pt" ? "Sites" : "Websites"}')
   `)
 
       await database.execAsync(`PRAGMA user_version = ${DATABASE_VERSION}`)

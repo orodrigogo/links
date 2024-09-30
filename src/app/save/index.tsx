@@ -10,6 +10,7 @@ import {
 } from "react-native"
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router"
 import { MaterialIcons } from "@expo/vector-icons"
+import { useTranslation } from "react-i18next"
 import { z, ZodError } from "zod"
 
 import { styles } from "./styles"
@@ -39,14 +40,16 @@ export default function Save() {
   const linksDatabase = useLinksDatabase()
   const params = useLocalSearchParams()
 
+  const { t } = useTranslation("translation", { keyPrefix: "save" })
+
   const formScheme = z.object({
-    category: z.number({ message: "Selecione uma categoria para o link" }),
+    category: z.number({ message: t("validation_required_category") }),
     name: z
-      .string({ message: "Informe o nome do link" })
-      .min(1, { message: "Informe o nome do link" }),
+      .string({ message: t("validation_required_name") })
+      .min(1, { message: t("validation_required_name") }),
     url: z
-      .string({ message: "Informe a URL" })
-      .url({ message: "Link inválido" }),
+      .string({ message: t("validation_required_url") })
+      .url({ message: t("validation_invalid_url") }),
   })
 
   async function handleSave() {
@@ -72,12 +75,16 @@ export default function Save() {
 
       setIsSaving(false)
 
-      Alert.alert("Sucesso", "Link salvo com sucesso!", [
-        {
-          text: "Ok",
-          onPress: () => router.back(),
-        },
-      ])
+      Alert.alert(
+        t("alert_save_success_title"),
+        t("alert_save_success_message"),
+        [
+          {
+            text: "Ok",
+            onPress: () => router.back(),
+          },
+        ]
+      )
     } catch (error) {
       setIsSaving(false)
 
@@ -85,7 +92,7 @@ export default function Save() {
         return Alert.alert("Atenção", error.errors[0].message)
       }
 
-      Alert.alert("Erro", "Não foi possível criar novo link.")
+      Alert.alert(t("alert_save_error_title"), t("alert_save_error_message"))
       console.log(error)
     }
   }
@@ -123,10 +130,10 @@ export default function Save() {
       return
     }
 
-    Alert.alert("Remover", "Deseja realmente remover?", [
-      { style: "cancel", text: "Não" },
+    Alert.alert(t("alert_remove_title"), t("alert_remove_message"), [
+      { style: "cancel", text: t("alert_remove_cancel") },
       {
-        text: "Sim",
+        text: t("alert_remove_confirm"),
         onPress: async () => {
           linksDatabase.remove(Number(params.id))
           router.back()
@@ -173,28 +180,40 @@ export default function Save() {
             <MaterialIcons name="delete" size={24} color={colors.gray[400]} />
           </TouchableOpacity>
         ) : (
-          <Text style={styles.title}>Novo</Text>
+          <Text style={styles.title}>{t("text_title")}</Text>
         )}
       </View>
 
       <View style={styles.form}>
         <Input
-          placeholder="Selecionar categoria"
+          placeholder={t("select_category_placeholder")}
           onPressIn={() => setModalIsOpen(true)}
           onFocus={() => Keyboard.dismiss()}
           showSoftInputOnFocus={false}
           value={category?.name}
         />
 
-        <Input placeholder="Nome" value={name} onChangeText={setName} />
-        <Input placeholder="Link" value={url} onChangeText={setUrl} />
-        <Button title="Salvar" onPress={handleSave} isLoading={isSaving} />
+        <Input
+          placeholder={t("input_name_placeholder")}
+          value={name}
+          onChangeText={setName}
+        />
+        <Input
+          placeholder={t("input_link_placeholder")}
+          value={url}
+          onChangeText={setUrl}
+        />
+        <Button
+          title={t("button_salve_title")}
+          onPress={handleSave}
+          isLoading={isSaving}
+        />
       </View>
 
       <Modal visible={modalIsOpen}>
         <View style={styles.modalContent}>
           <View style={styles.modalHeader}>
-            <Text style={styles.title}>Categoria</Text>
+            <Text style={styles.title}>{t("text_categories_title")}</Text>
             <TouchableOpacity onPress={() => setModalIsOpen(false)}>
               <MaterialIcons name="close" size={24} color={colors.gray[400]} />
             </TouchableOpacity>
@@ -202,7 +221,7 @@ export default function Save() {
 
           <View style={styles.search}>
             <Input
-              placeholder="Pesquisar"
+              placeholder={t("input_search_placeholder")}
               onChangeText={setSearchCategoryByName}
             />
           </View>
@@ -222,7 +241,10 @@ export default function Save() {
             showsVerticalScrollIndicator={false}
           />
 
-          <Button title="Adicionar categoria" onPress={handleNewCategory} />
+          <Button
+            title={t("button_category_add_title")}
+            onPress={handleNewCategory}
+          />
         </View>
       </Modal>
     </View>

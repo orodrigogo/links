@@ -1,26 +1,57 @@
+import "@/locales/i18n"
+
 import { Suspense } from "react"
-import { Stack } from "expo-router"
+import { Drawer } from "expo-router/drawer"
 import { SQLiteProvider } from "expo-sqlite"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
+import { useTranslation } from "react-i18next"
+import { Feather } from "@expo/vector-icons"
 
 import { migrateDbIfNeeded } from "@/database/migrateDbIfNeeded"
 
 import { colors } from "@/styles/colors"
+
 import { Loading } from "@/components/loading"
+import { CustomDrawerContent } from "@/components/custom-drawer-content"
 
 export default function Layout() {
-  const backgroundColor = colors.gray[950]
+  const { t } = useTranslation("translation", { keyPrefix: "navigation" })
 
   return (
-    <GestureHandlerRootView style={{ flex: 1, backgroundColor }}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <Suspense fallback={<Loading />}>
-        <SQLiteProvider databaseName="test.db" onInit={migrateDbIfNeeded}>
-          <Stack
+        <SQLiteProvider databaseName="links.db" onInit={migrateDbIfNeeded}>
+          <Drawer
+            drawerContent={CustomDrawerContent}
             screenOptions={{
               headerShown: false,
-              contentStyle: { backgroundColor },
+              drawerActiveBackgroundColor: "transparent",
+              drawerActiveTintColor: colors.green[300],
+              drawerInactiveTintColor: colors.gray[400],
+              drawerContentStyle: {
+                backgroundColor: colors.gray[800],
+              },
             }}
-          />
+          >
+            <Drawer.Screen
+              name="index/index"
+              options={{
+                title: t("route_index"),
+                drawerIcon: ({ color, size }) => (
+                  <Feather name="home" size={size} color={color} />
+                ),
+              }}
+            />
+            <Drawer.Screen
+              name="new-category/index"
+              options={{ drawerLabel: () => null }}
+            />
+
+            <Drawer.Screen
+              name="save/index"
+              options={{ drawerLabel: () => null }}
+            />
+          </Drawer>
         </SQLiteProvider>
       </Suspense>
     </GestureHandlerRootView>

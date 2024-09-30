@@ -1,0 +1,53 @@
+{
+  "index": {
+    "input_search_placeholder": "Search",
+    "flatlist_links_empty": "No links added here.",
+    "option_edit_name": "Edit",
+    "option_open_name": "Open",
+    "alert_error_get_links": "Could not list the links."
+  },
+  "navigation": {
+    "route_index": "Home",
+    "route_categories": "Categories",
+    "label_dark": "Dark Theme",
+    "label_light": "Light Theme"
+  },
+  "save": {
+    "text_title": "New",
+    "text_categories_title": "Categories",
+    "validation_required_category": "Select a category for the link",
+    "validation_required_name": "Enter the link name",
+    "validation_required_url": "Enter the URL",
+    "validation_invalid_url": "Invalid link",
+    "alert_save_success_title": "Success",
+    "alert_save_success_message": "Link saved successfully!",
+    "alert_save_error_title": "Error",
+    "alert_save_error_message": "Could not create new link.",
+    "alert_remove_title": "Remove",
+    "alert_remove_message": "Do you really want to remove?",
+    "alert_remove_cancel": "No",
+    "alert_remove_confirm": "Yes",
+    "select_category_placeholder": "Select category",
+    "input_name_placeholder": "Name",
+    "input_link_placeholder": "Link",
+    "button_salve_title": "Save",
+    "input_search_placeholder": "Search",
+    "button_category_add_title": "Add category"
+  },
+  "new_category": {
+    "validation_category_name_required": "Enter the category name",
+    "alert_remove_title": "Remove",
+    "alert_remove_message": "Do you really want to remove?",
+    "alert_remove_cancel": "No",
+    "alert_remove_confirm": "Yes",
+    "alert_save_success_title": "Success",
+    "alert_save_success_message": "Saved successfully!",
+    "alert_save_error_validation_title": "Attention",
+    "alert_save_error_title": "Error",
+    "alert_save_error_message": "Could not create new link",
+    "text_category": "Category",
+    "input_name_placeholder": "Name",
+    "button_salve_title": "Save",
+    "button_remove_title": "Remove"
+  }
+}
