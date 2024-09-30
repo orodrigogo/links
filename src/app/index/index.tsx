@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
+import { MaterialIcons } from "@expo/vector-icons"
+import { router, useFocusEffect } from "expo-router"
 import {
   Alert,
   View,
@@ -7,37 +9,36 @@ import {
   Image,
   Linking,
   FlatList,
-  TouchableOpacity,
   Pressable,
+  TouchableOpacity,
 } from "react-native"
-import { MaterialIcons } from "@expo/vector-icons"
-import { router, useFocusEffect } from "expo-router"
 
 import { Link } from "@/components/link"
+import { Input } from "@/components/input"
 import { Option } from "@/components/option"
+import { Category } from "@/components/category"
 
 import { styles } from "./styles"
 import { colors } from "@/styles/colors"
-
-import { linkStorage, LinkStorage } from "@/storage/link-storage"
-import { Category } from "@/components/category"
 
 import {
   CategoryDatabase,
   useCategoriesDatabase,
 } from "@/database/useCategoriesDatabase"
+
 import {
   LinkDatabase,
   LinkShowDatabase,
   useLinksDatabase,
 } from "@/database/useLinksDatabase"
-import { Input } from "@/components/input"
 
 export default function Index() {
   const [showModal, setShowModal] = useState(false)
+
   const [links, setLinks] = useState<LinkDatabase[]>([])
-  const [category, setCategory] = useState<CategoryDatabase | null>(null)
   const [categories, setCategories] = useState<CategoryDatabase[]>([])
+
+  const [category, setCategory] = useState<CategoryDatabase | null>(null)
   const [link, setLink] = useState<LinkShowDatabase | null>(null)
   const [searchLinkByName, setSearchByName] = useState("")
 
@@ -57,22 +58,9 @@ export default function Index() {
     }
   }
 
-  async function handleRemove() {
-    if (!link) {
-      return
-    }
-
-    Alert.alert("Remover", "Deseja realmente remover?", [
-      { style: "cancel", text: "Não" },
-      {
-        text: "Sim",
-        onPress: async () => {
-          await linksDatabase.remove(link.id)
-          getLinks()
-          setShowModal(false)
-        },
-      },
-    ])
+  async function handleEdit() {
+    setShowModal(false)
+    router.navigate({ pathname: "/save", params: { id: link?.id } })
   }
 
   async function handleDetails(selected: LinkDatabase) {
@@ -122,7 +110,7 @@ export default function Index() {
       <View style={styles.header}>
         <Image source={require("@/assets/logo.png")} style={styles.logo} />
 
-        <TouchableOpacity onPress={() => router.navigate("/add")}>
+        <TouchableOpacity onPress={() => router.navigate("/save")}>
           <MaterialIcons name="add" size={32} color={colors.green[300]} />
         </TouchableOpacity>
       </View>
@@ -188,11 +176,12 @@ export default function Index() {
 
             <View style={styles.footer}>
               <Option
-                name="Excluir"
-                icon="delete"
+                name="Editar"
+                icon="edit"
                 variant="secondary"
-                onPress={handleRemove}
+                onPress={handleEdit}
               />
+
               <Option name="Abrir" icon="language" onPress={handleOpen} />
             </View>
           </View>

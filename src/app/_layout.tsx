@@ -10,6 +10,7 @@ import { Loading } from "@/components/loading"
 
 export default function Layout() {
   const backgroundColor = colors.gray[950]
+
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor }}>
       <Suspense fallback={<Loading />}>

@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import {
   Alert,
   FlatList,
@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native"
-import { router, useFocusEffect } from "expo-router"
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router"
 import { MaterialIcons } from "@expo/vector-icons"
 import { z, ZodError } from "zod"
 
@@ -26,17 +26,18 @@ import {
 } from "@/database/useCategoriesDatabase"
 import { Checkbox } from "@/components/checkbox"
 
-export default function Add() {
+export default function Save() {
   const [searchCategoryByName, setSearchCategoryByName] = useState("")
   const [categories, setCategories] = useState<CategoryDatabase[]>([])
   const [modalIsOpen, setModalIsOpen] = useState(false)
-  const [isCreating, setIsCreating] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
   const [category, setCategory] = useState<CategoryDatabase | null>(null)
   const [name, setName] = useState("")
   const [url, setUrl] = useState("")
 
   const categoriesDatabase = useCategoriesDatabase()
   const linksDatabase = useLinksDatabase()
+  const params = useLocalSearchParams()
 
   const formScheme = z.object({
     category: z.number({ message: "Selecione uma categoria para o link" }),
@@ -48,28 +49,37 @@ export default function Add() {
       .url({ message: "Link inválido" }),
   })
 
-  async function handleAdd() {
+  async function handleSave() {
     try {
       formScheme.parse({ category: category?.id, name: name.trim(), url })
 
-      setIsCreating(true)
+      setIsSaving(true)
 
-      await linksDatabase.create({
-        name: name.trim(),
-        url,
-        category_id: category!.id,
-      })
+      if (params.id) {
+        await linksDatabase.update({
+          id: Number(params.id),
+          name: name.trim(),
+          url,
+          category_id: category!.id,
+        })
+      } else {
+        await linksDatabase.create({
+          name: name.trim(),
+          url,
+          category_id: category!.id,
+        })
+      }
 
-      setIsCreating(false)
+      setIsSaving(false)
 
-      Alert.alert("Sucesso", "Novo link adicionado!", [
+      Alert.alert("Sucesso", "Link salvo com sucesso!", [
         {
           text: "Ok",
           onPress: () => router.back(),
         },
       ])
     } catch (error) {
-      setIsCreating(false)
+      setIsSaving(false)
 
       if (error instanceof ZodError) {
         return Alert.alert("Atenção", error.errors[0].message)
@@ -108,6 +118,43 @@ export default function Add() {
     setCategory(null)
   }
 
+  async function handleRemove() {
+    if (!params.id) {
+      return
+    }
+
+    Alert.alert("Remover", "Deseja realmente remover?", [
+      { style: "cancel", text: "Não" },
+      {
+        text: "Sim",
+        onPress: async () => {
+          linksDatabase.remove(Number(params.id))
+          router.back()
+        },
+      },
+    ])
+  }
+
+  async function getLinkDetails(id: number) {
+    try {
+      const response = await linksDatabase.show(id)
+
+      if (response) {
+        setName(response.name)
+        setUrl(response.url)
+        setCategory({ id: response.category_id, name: response.category_name })
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    if (params.id) {
+      getLinkDetails(Number(params.id))
+    }
+  }, [])
+
   useFocusEffect(
     useCallback(() => {
       getCategories()
@@ -121,7 +168,13 @@ export default function Add() {
           <MaterialIcons name="arrow-back" size={32} color={colors.gray[200]} />
         </TouchableOpacity>
 
-        <Text style={styles.title}>Novo</Text>
+        {params.id ? (
+          <TouchableOpacity activeOpacity={0.7} onPress={handleRemove}>
+            <MaterialIcons name="delete" size={24} color={colors.gray[400]} />
+          </TouchableOpacity>
+        ) : (
+          <Text style={styles.title}>Novo</Text>
+        )}
       </View>
 
       <View style={styles.form}>
@@ -132,9 +185,10 @@ export default function Add() {
           showSoftInputOnFocus={false}
           value={category?.name}
         />
-        <Input placeholder="Nome" onChangeText={setName} />
-        <Input placeholder="Link" onChangeText={setUrl} />
-        <Button title="Salvar" onPress={handleAdd} isLoading={isCreating} />
+
+        <Input placeholder="Nome" value={name} onChangeText={setName} />
+        <Input placeholder="Link" value={url} onChangeText={setUrl} />
+        <Button title="Salvar" onPress={handleSave} isLoading={isSaving} />
       </View>
 
       <Modal visible={modalIsOpen}>
