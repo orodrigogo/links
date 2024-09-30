@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
   },
   containerSelected: {
     backgroundColor: colors.green[300],
-    borderColor: colors.green[300],
+    borderColor: "transparent",
   },
   name: {
     fontSize: 16,

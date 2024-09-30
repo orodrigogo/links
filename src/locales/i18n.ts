@@ -5,12 +5,12 @@ import { getLocales } from "expo-localization"
 import en from "./en.json"
 import pt from "./pt.json"
 
-const language = getLocales()[0].languageCode ?? "pt"
+const language = getLocales()[0].languageCode ?? "en"
 
 i18n.use(initReactI18next).init({
   compatibilityJSON: "v3",
   lng: language,
-  fallbackLng: "pt",
+  fallbackLng: "en",
   resources: {
     pt: { translation: pt },
     en: { translation: en },
