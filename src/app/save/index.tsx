@@ -13,9 +13,6 @@ import { MaterialIcons } from "@expo/vector-icons"
 import { useTranslation } from "react-i18next"
 import { z, ZodError } from "zod"
 
-import { styles } from "./styles"
-import { colors } from "@/styles/colors"
-
 import { Input } from "@/components/input"
 import { Button } from "@/components/button"
 
@@ -26,6 +23,9 @@ import {
   useCategoriesDatabase,
 } from "@/database/useCategoriesDatabase"
 import { Checkbox } from "@/components/checkbox"
+
+import { styles } from "./styles"
+import { colors } from "@/styles/colors"
 
 export default function Save() {
   const [searchCategoryByName, setSearchCategoryByName] = useState("")

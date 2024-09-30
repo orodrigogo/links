@@ -2,7 +2,7 @@ import { useCallback, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { MaterialIcons } from "@expo/vector-icons"
 import { router, useFocusEffect } from "expo-router"
-import { DrawerToggleButton } from "@react-navigation/drawer"
+
 import {
   Alert,
   View,
@@ -20,9 +20,6 @@ import { Input } from "@/components/input"
 import { Option } from "@/components/option"
 import { Category } from "@/components/category"
 
-import { useStyles } from "./styles"
-import { colors } from "@/styles/colors"
-
 import {
   CategoryDatabase,
   useCategoriesDatabase,
@@ -33,6 +30,8 @@ import {
   LinkShowDatabase,
   useLinksDatabase,
 } from "@/database/useLinksDatabase"
+import { styles } from "./styles"
+import { colors } from "@/styles/colors"
 
 export default function Index() {
   const [showModal, setShowModal] = useState(false)
@@ -44,10 +43,8 @@ export default function Index() {
   const [category, setCategory] = useState<CategoryDatabase | null>(null)
   const [link, setLink] = useState<LinkShowDatabase | null>(null)
 
-  const categoriesDatabase = useCategoriesDatabase()
   const linksDatabase = useLinksDatabase()
-
-  const styles = useStyles()
+  const categoriesDatabase = useCategoriesDatabase()
   const { t } = useTranslation("translation", { keyPrefix: "index" })
 
   async function getLinks() {
@@ -113,7 +110,7 @@ export default function Index() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <DrawerToggleButton tintColor={colors.green[300]} />
+        <Image source={require("@/assets/logo.png")} style={styles.logo} />
 
         <TouchableOpacity onPress={() => router.navigate("/save")}>
           <MaterialIcons name="add" size={32} color={colors.green[300]} />
