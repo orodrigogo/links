@@ -20,7 +20,7 @@ import { Input } from "@/components/input"
 import { Option } from "@/components/option"
 import { Category } from "@/components/category"
 
-import { styles } from "./styles"
+import { useStyles } from "./styles"
 import { colors } from "@/styles/colors"
 
 import {
@@ -47,6 +47,7 @@ export default function Index() {
   const categoriesDatabase = useCategoriesDatabase()
   const linksDatabase = useLinksDatabase()
 
+  const styles = useStyles()
   const { t } = useTranslation("translation", { keyPrefix: "index" })
 
   async function getLinks() {

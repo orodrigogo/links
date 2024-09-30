@@ -13,6 +13,7 @@ import { colors } from "@/styles/colors"
 
 import { Loading } from "@/components/loading"
 import { CustomDrawerContent } from "@/components/custom-drawer-content"
+import { ThemeProvider } from "@/contexts/themeContext"
 
 export default function Layout() {
   const { t } = useTranslation("translation", { keyPrefix: "navigation" })
@@ -21,37 +22,39 @@ export default function Layout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Suspense fallback={<Loading />}>
         <SQLiteProvider databaseName="links.db" onInit={migrateDbIfNeeded}>
-          <Drawer
-            drawerContent={CustomDrawerContent}
-            screenOptions={{
-              headerShown: false,
-              drawerActiveBackgroundColor: "transparent",
-              drawerActiveTintColor: colors.green[300],
-              drawerInactiveTintColor: colors.gray[400],
-              drawerContentStyle: {
-                backgroundColor: colors.gray[800],
-              },
-            }}
-          >
-            <Drawer.Screen
-              name="index/index"
-              options={{
-                title: t("route_index"),
-                drawerIcon: ({ color, size }) => (
-                  <Feather name="home" size={size} color={color} />
-                ),
+          <ThemeProvider>
+            <Drawer
+              drawerContent={CustomDrawerContent}
+              screenOptions={{
+                headerShown: false,
+                drawerActiveBackgroundColor: "transparent",
+                drawerActiveTintColor: colors.green[300],
+                drawerInactiveTintColor: colors.gray[400],
+                drawerContentStyle: {
+                  backgroundColor: colors.gray[800],
+                },
               }}
-            />
-            <Drawer.Screen
-              name="new-category/index"
-              options={{ drawerLabel: () => null }}
-            />
+            >
+              <Drawer.Screen
+                name="index/index"
+                options={{
+                  title: t("route_index"),
+                  drawerIcon: ({ color, size }) => (
+                    <Feather name="home" size={size} color={color} />
+                  ),
+                }}
+              />
+              <Drawer.Screen
+                name="new-category/index"
+                options={{ drawerLabel: () => null }}
+              />
 
-            <Drawer.Screen
-              name="save/index"
-              options={{ drawerLabel: () => null }}
-            />
-          </Drawer>
+              <Drawer.Screen
+                name="save/index"
+                options={{ drawerLabel: () => null }}
+              />
+            </Drawer>
+          </ThemeProvider>
         </SQLiteProvider>
       </Suspense>
     </GestureHandlerRootView>

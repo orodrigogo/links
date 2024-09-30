@@ -3,34 +3,19 @@ import {
   DrawerContentScrollView,
   DrawerItemList,
 } from "@react-navigation/drawer"
-import { Text, View, Switch, useColorScheme } from "react-native"
-import { themeStorage } from "@/storage/theme-storage"
+import { Text, View, Switch } from "react-native"
 import { useTranslation } from "react-i18next"
 
+import { useTheme } from "@/hooks/useTheme"
+
 import { styles } from "./styles"
-import { colors } from "@/styles/colors"
-import { useEffect, useState } from "react"
+import { darkColors } from "@/styles/dark-colors"
 
 export function CustomDrawerContent(props: DrawerContentComponentProps) {
-  const [isDarkMode, setIsDarkMode] = useState(false)
   const { t } = useTranslation("translation", { keyPrefix: "navigation" })
+  const { colors, toggleTheme } = useTheme()
 
-  const colorScheme = useColorScheme()
-  console.log(colorScheme)
-
-  async function getTheme() {
-    const theme = await themeStorage.get()
-    setIsDarkMode(theme === "dark")
-  }
-
-  async function handleChangeTheme() {
-    await themeStorage.save(isDarkMode ? "light" : "dark")
-    setIsDarkMode((prevState) => !prevState)
-  }
-
-  useEffect(() => {
-    getTheme()
-  }, [])
+  const isDarkMode = colors === darkColors
 
   return (
     <View style={styles.container}>
@@ -44,7 +29,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
           thumbColor={isDarkMode ? colors.green[300] : colors.gray[900]}
           trackColor={{ false: colors.gray[400], true: colors.gray[600] }}
           value={isDarkMode}
-          onChange={handleChangeTheme}
+          onChange={toggleTheme}
         />
         <Text style={styles.label}>{t("label_dark")}</Text>
       </View>
