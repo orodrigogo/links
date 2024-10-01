@@ -132,9 +132,11 @@ export default function NewCategory() {
         />
       </View>
 
-      <TouchableOpacity style={styles.removeButton} onPress={handleRemove}>
-        <Text style={styles.remove}>{t("button_remove_title")}</Text>
-      </TouchableOpacity>
+      {params.id && (
+        <TouchableOpacity style={styles.removeButton} onPress={handleRemove}>
+          <Text style={styles.remove}>{t("button_remove_title")}</Text>
+        </TouchableOpacity>
+      )}
     </View>
   )
 }
